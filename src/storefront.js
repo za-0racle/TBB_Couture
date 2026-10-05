@@ -134,8 +134,8 @@ document.querySelector('#app').innerHTML = html`
     <section class="hero" id="home">
       <img
         class="hero-photo"
-        src="${photo('photo-1539109136881-3be0616acf4b', 2000)}"
-        alt="Fashion editorial with contemporary tailoring on a city street"
+        src="/homebg.jpg"
+        alt="A seated man wearing an embroidered olive-green agbada and matching cap"
         fetchpriority="high"
       />
       <div class="shade"></div>
