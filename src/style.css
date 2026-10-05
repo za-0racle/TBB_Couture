@@ -1134,3 +1134,66 @@ footer .brand {
     display: inline;
   }
 }
+
+/* Custom contact icons in the brand's bronze finish. */
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+.contact-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: 1px solid #ad895266;
+  border-radius: 50%;
+  color: var(--gold-light);
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+.footer-links a:hover .contact-icon,
+.footer-links a:focus-visible .contact-icon {
+  border-color: var(--gold-light);
+  background: var(--gold-light);
+  color: var(--ink);
+}
+
+/* Mobile WhatsApp shortcut, clear of device safe areas and modal dialogs. */
+.floating-whatsapp {
+  display: none;
+}
+@media (max-width: 760px) {
+  .floating-whatsapp {
+    position: fixed;
+    right: calc(16px + env(safe-area-inset-right, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    z-index: 25;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid #ffffff40;
+    background: #18794e;
+    color: #fff;
+    box-shadow: 0 4px 16px #00000026;
+    transition:
+      background 0.2s,
+      transform 0.2s;
+  }
+  .floating-whatsapp:hover {
+    background: #12633f;
+    transform: translateY(-2px);
+  }
+  body:has(dialog[open]) .floating-whatsapp {
+    display: none;
+  }
+  body:has(.floating-whatsapp) footer {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+}

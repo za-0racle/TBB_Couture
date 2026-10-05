@@ -355,20 +355,75 @@ document.querySelector('#app').innerHTML = html`
     <a href="#home" aria-label="TBB Couture home">${brand}</a>
     <p class="footer-slogan">We design 2 fit.</p>
     <div class="footer-links">
-      <a href="tel:+2348169824380">↗ &nbsp; +234 816 982 4380</a>
+      <a href="tel:+2348169824380">
+        <span class="contact-icon" aria-hidden="true">
+          <svg
+            width="19"
+            height="19"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            focusable="false"
+          >
+            <path
+              d="M7 3H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3l-5-2-2 2a14 14 0 0 1-7-7l2-2-2-5Z"
+            />
+          </svg>
+        </span>
+        <span>+234 816 982 4380</span>
+      </a>
       <a
-        href="https://www.instagram.com/tbbcouture/"
+        href="https://www.instagram.com/tbb_couture/"
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="TBB Couture on Instagram (opens in a new tab)"
       >
-        ◎ &nbsp; @tbbcouture
+        <span class="contact-icon" aria-hidden="true">
+          <svg
+            width="19"
+            height="19"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            focusable="false"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="5" />
+            <circle cx="12" cy="12" r="4" />
+            <circle cx="17.5" cy="6.5" r=".9" fill="currentColor" stroke="none" />
+          </svg>
+        </span>
+        <span>@tbb_couture</span>
       </a>
       <a
         href="https://www.tiktok.com/@tbb.couture"
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="TBB Couture on TikTok (opens in a new tab)"
       >
-        ♪ &nbsp; tbb.couture
+        <span class="contact-icon" aria-hidden="true">
+          <svg
+            width="19"
+            height="19"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            focusable="false"
+          >
+            <path
+              d="M14 3h3a5 5 0 0 0 4 4v3a8 8 0 0 1-4-1.1V16a6 6 0 1 1-6-6v3a3 3 0 1 0 3 3V3Z"
+            />
+          </svg>
+        </span>
+        <span>@tbb.couture</span>
       </a>
     </div>
     <div class="footer-bottom">
@@ -378,6 +433,34 @@ document.querySelector('#app').innerHTML = html`
       <a href="#home">Back to top ↑</a>
     </div>
   </footer>
+  <a
+    class="floating-whatsapp"
+    href="https://wa.me/2348169824380?text=Hello%20TBB%20Couture%21%20I%27d%20like%20to%20make%20an%20inquiry."
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Chat with TBB Couture on WhatsApp (opens in a new tab)"
+    title="Chat on WhatsApp"
+  >
+    <svg
+      width="25"
+      height="25"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.5L3 20.5l1.3-4.8a8.5 8.5 0 1 1 16.2-4Z" />
+      <path
+        d="m8.2 7 1.5 2.5-1 1.2a8.2 8.2 0 0 0 4.2 4.1l1.2-1 2.5 1.4c-.4 1.5-1.5 2-2.8 1.6-3.8-1.1-6.7-4-7.6-7.2-.4-1.3.4-2.4 2-2.6Z"
+        fill="currentColor"
+        stroke="none"
+      />
+    </svg>
+  </a>
   <dialog id="gallery-dialog" class="gallery-dialog" aria-labelledby="gallery-caption">
     <button class="gallery-close close" aria-label="Close image preview">&times;</button>
     <img id="gallery-image" alt="" />
