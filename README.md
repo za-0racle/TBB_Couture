@@ -20,14 +20,18 @@ Deploy the generated `dist` directory to any static host.
 
 ## Customize
 
-- `src/main.js`: collection data, section content, social links, filtering, navigation, and inquiry dialogs.
+- `src/main.js`: public/admin entry point.
+- `src/storefront.js`: public sections, filtering, live catalog loading, and inquiries.
+- `src/admin.js` and `src/admin.css`: admin login, dashboard, and editors.
+- `src/backend.js`: authentication, database, and storage connection.
+- `supabase/schema.sql`: database schema and access policies.
 - `src/style.css`: responsive layouts, palette variables, typography, and reduced-motion support.
 - `index.html`: page title, description, and metadata.
 - `public/favicon.svg`: brand favicon.
 
 Collection names and prices are demonstration content, clearly labeled on the page. Replace them with approved inventory before commercial use. Editorial placeholder photographs load from Unsplash and fonts from Google Fonts; an internet connection is required for those assets. Replace image URLs with local licensed product photographs when available.
 
-Consultation, product, and apprenticeship forms use native browser validation and open a prefilled WhatsApp message to +2348169824380. Visitors must send the message in WhatsApp themselves. No backend, payment processing, enrollment submission, or personal-data storage is included.
+Consultation, product, and Learning Center forms use native browser validation and open a prefilled WhatsApp message to +2348169824380. Visitors must send the message in WhatsApp themselves. Public inquiries do not store visitor details. Admin authentication, catalog content, and images use Supabase when configured. Payment processing and enrollment submission are not included.
 
 Validation: `npm run build` and `node --check src/main.js` pass. Browser automation is not installed in this workspace.
 
@@ -39,4 +43,8 @@ Run `npm run format` to keep source code in readable, indented blocks, or `npm r
 
 ## Featured-work gallery
 
-Edit `src/gallery.js` to update the lookbook titles, categories, and photographs. The initial gallery uses clearly labeled editorial placeholders, not verified TBB Couture work. Gallery previews support previous/next buttons, arrow keys, Escape, and backdrop dismissal.
+When Supabase is connected, manage gallery works and sale items at `/admin`. Without configuration, `src/gallery.js` provides demo lookbook data. The initial gallery uses clearly labeled editorial placeholders, not verified TBB Couture work. Gallery previews support previous/next buttons, arrow keys, Escape, and backdrop dismissal.
+
+## Admin workspace
+
+Visit `/admin` to manage gallery works and sale items. Follow [ADMIN_SETUP.md](./ADMIN_SETUP.md) to configure Supabase Auth, database policies, storage, and Vercel environment variables. Without that setup, admin uploads are unavailable. Run `npm test` for validation and API contract checks; the latter use mocked HTTP responses rather than a live Supabase project.
