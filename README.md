@@ -31,7 +31,7 @@ Deploy the generated `dist` directory to any static host.
 
 Collection names and prices are demonstration content, clearly labeled on the page. Replace them with approved inventory before commercial use. Editorial placeholder photographs load from Unsplash and fonts from Google Fonts; an internet connection is required for those assets. Replace image URLs with local licensed product photographs when available.
 
-Consultation, product, and Learning Center forms use native browser validation and open a prefilled WhatsApp message to +2348169824380. Visitors must send the message in WhatsApp themselves. Public inquiries do not store visitor details. Admin authentication, catalog content, and images use Supabase when configured. Payment processing and enrollment submission are not included.
+Consultation, product, and Learning Center forms use native browser validation and open a prefilled WhatsApp message to +2348164835306. The marketplace cart supports adding items, adjusting quantities, removing selections, and sending an order summary to the same WhatsApp number. Contact links also open WhatsApp. Visitors must send messages themselves; public inquiries and cart contents are not stored. Admin authentication, catalog content, and images use Supabase when configured. Payment processing and enrollment submission are not included.
 
 Validation: `npm run build` and `node --check src/main.js` pass. Browser automation is not installed in this workspace.
 

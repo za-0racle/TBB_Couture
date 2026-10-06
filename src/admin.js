@@ -42,7 +42,7 @@ function renderLogin(message = '') {
           <em>Thoughtfully managed.</em>
         </h1>
         <p>Your collection, your creations, your workspace.</p>
-        <a href="/">Return to the storefront &rarr;</a>
+        <a href="/">Return to the storefront</a>
       </div>
       <section class="login-panel">
         <p class="eyebrow">TBB COUTURE ADMIN</p>
@@ -67,19 +67,43 @@ function renderLogin(message = '') {
                   </label>
                   <label>
                     Password
-                    <input
-                      name="password"
-                      type="password"
-                      autocomplete="current-password"
-                      required
-                    />
+                    <span class="admin-password-field">
+                      <input
+                        name="password"
+                        type="password"
+                        autocomplete="current-password"
+                        required
+                      />
+                      <button
+                        class="admin-password-toggle"
+                        type="button"
+                        aria-label="Show password"
+                        aria-pressed="false"
+                        title="Show password"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+                          <circle cx="12" cy="12" r="3" />
+                          <path class="password-eye-slash" d="m4 4 16 16" hidden />
+                        </svg>
+                      </button>
+                    </span>
                   </label>
                   <p id="login-message" class="form-error" role="alert">
                     ${esc(message)}
                   </p>
-                  <button class="button dark" type="submit">
-                    Sign in to workspace &rarr;
-                  </button>
+                  <button class="button dark" type="submit">Sign in to workspace</button>
                 </form>
                 <p class="admin-hint">
                   Access is by invitation. Contact the project owner if you need an
@@ -115,12 +139,22 @@ function renderLogin(message = '') {
                   <code>ADMIN_SETUP.md</code>
                   in the project for the full setup guide.
                 </p>
-                <a class="button outline" href="/">View storefront &rarr;</a>
+                <a class="button outline" href="/">View storefront</a>
               `
         }
       </section>
     </main>
   `
+  const password = document.querySelector('#login-form [name="password"]')
+  const passwordToggle = document.querySelector('.admin-password-toggle')
+  passwordToggle?.addEventListener('click', () => {
+    const visible = password.type === 'password'
+    password.type = visible ? 'text' : 'password'
+    passwordToggle.setAttribute('aria-pressed', String(visible))
+    passwordToggle.setAttribute('aria-label', visible ? 'Hide password' : 'Show password')
+    passwordToggle.title = visible ? 'Hide password' : 'Show password'
+    passwordToggle.querySelector('.password-eye-slash').hidden = !visible
+  })
   document.querySelector('#login-form')?.addEventListener('submit', async (event) => {
     event.preventDefault()
     const form = event.currentTarget
@@ -167,7 +201,7 @@ async function openWorkspace() {
             <br />
             Managed with care.
           </p>
-          <a href="/" target="_blank" rel="noopener">View live storefront &nearr;</a>
+          <a href="/" target="_blank" rel="noopener">View live storefront</a>
         </div>
       </aside>
       <div class="admin-body">
@@ -254,9 +288,9 @@ function renderWorkspace() {
         </p>
       </div>
       <div class="heading-actions">
-        ${dashboard ? '<button class="button outline" data-add="work">+ Upload work</button>' : ''}
+        ${dashboard ? '<button class="button outline" data-add="work">Upload work</button>' : ''}
         <button class="button dark" data-add="${dashboard ? 'product' : currentView}">
-          ${currentView === 'work' ? '+ Upload work' : '+ Add sale item'}
+          ${currentView === 'work' ? 'Upload work' : 'Add sale item'}
         </button>
       </div>
     </div>
@@ -299,7 +333,7 @@ function renderWorkspace() {
                   marketplace.
                 </p>
               </div>
-              <a href="/" target="_blank" rel="noopener">View storefront &nearr;</a>
+              <a href="/" target="_blank" rel="noopener">View storefront</a>
             </div>
           `
         : ''
@@ -309,7 +343,7 @@ function renderWorkspace() {
         <h2>
           ${dashboard ? 'Recently updated' : 'Your ' + (currentView === 'work' ? 'featured work' : 'sale items')}
         </h2>
-        <button id="refresh-items" class="text-button">Refresh &orarr;</button>
+        <button id="refresh-items" class="text-button">Refresh</button>
       </div>
       <div class="admin-filters">
         <label class="search-label">
@@ -400,7 +434,7 @@ function renderItems() {
                       ${item.kind === 'product' ? money(item.price, item.unit) : 'Gallery work'}
                     </p>
                     <div class="item-actions">
-                      <button data-edit="${item.id}">Edit details &nearr;</button>
+                      <button data-edit="${item.id}">Edit details</button>
                       <button
                         class="delete-button"
                         data-delete="${item.id}"
@@ -418,7 +452,6 @@ function renderItems() {
       `
     : html`
         <div class="admin-empty">
-          <span aria-hidden="true">&#10023;</span>
           <h3>
             ${query || statusFilter !== 'all' ? 'No matching items.' : 'A fresh canvas.'}
           </h3>

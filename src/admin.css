@@ -388,6 +388,34 @@
   gap: 9px;
   font-size: 11px;
 }
+.admin-password-field {
+  position: relative;
+  display: block;
+}
+.admin-password-field input {
+  padding-right: 48px;
+}
+.admin-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  transform: translateY(-50%);
+}
+.admin-password-toggle:hover {
+  color: var(--ink);
+}
+.admin-password-toggle:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 0;
+}
 .form-error {
   color: #9b362c !important;
   font-size: 12px;
@@ -595,5 +623,60 @@
   }
   .admin-filters {
     flex-direction: column;
+  }
+}
+
+/* Keep editors and management controls usable on narrow or zoomed screens. */
+.admin-heading > *,
+.heading-actions,
+.editor-columns > *,
+.price-fields > * {
+  min-width: 0;
+}
+.heading-actions {
+  flex-shrink: 1;
+}
+.admin-item h3,
+.admin-heading h1 {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .editor-dialog input,
+  .editor-dialog select,
+  .editor-dialog textarea,
+  .admin-login input,
+  .admin-filters input,
+  .admin-filters select {
+    font-size: 16px;
+  }
+  .editor-dialog input[type='file'] {
+    padding: 8px;
+    font-size: 12px;
+  }
+  .editor-actions {
+    flex-wrap: wrap;
+  }
+  .editor-actions .button {
+    flex: 1 1 100px;
+  }
+  .admin-heading h1 {
+    font-size: clamp(30px, 8vw, 38px);
+  }
+}
+@media (max-width: 360px) {
+  .stat-grid {
+    gap: 10px;
+  }
+  .stat-grid article {
+    padding: 12px;
+  }
+  .price-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .login-story h1 {
+    font-size: 40px;
+  }
+  .login-panel h2 {
+    font-size: 36px;
   }
 }

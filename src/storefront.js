@@ -1,4 +1,4 @@
-﻿import './style.css'
+import './style.css'
 import { galleryWorks as sampleWorks } from './gallery.js'
 import { configured, publicItems, imageUrl } from './backend.js'
 import { escapeHtml as esc, money } from './utils.js'
@@ -6,6 +6,9 @@ let galleryWorks = sampleWorks
 let catalogError = ''
 // Mark HTML templates so markup stays in readable blocks.
 const html = String.raw
+const whatsappNumber = '2348164835306'
+const whatsappUrl = (message) =>
+  `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 
 // Collection preview data and shared brand elements.
 const photo = (id, w = 1000) =>
@@ -16,28 +19,36 @@ let products = [
   {
     name: 'The Signature Suit',
     type: 'readymade',
-    price: '₦185,000',
+    price: money(185000),
+    amount: 185000,
+    unit: 'piece',
     photo: 'photo-1594633312681-425c7b97ccd1',
     tag: 'THE SIGNATURE EDIT',
   },
   {
     name: 'The Evening Muse',
     type: 'readymade',
-    price: '₦145,000',
+    price: money(145000),
+    amount: 145000,
+    unit: 'piece',
     photo: 'photo-1595777457583-95e059d581b8',
     tag: 'OCCASION WEAR',
   },
   {
     name: 'Italian Wool Blend',
     type: 'materials',
-    price: '₦28,000 / yard',
+    price: money(28000, 'yard'),
+    amount: 28000,
+    unit: 'yard',
     photo: 'photo-1558618666-fcd25c85cd64',
     tag: 'FABRIC LIBRARY',
   },
   {
     name: 'The Everyday Essential',
     type: 'readymade',
-    price: '₦95,000',
+    price: money(95000),
+    amount: 95000,
+    unit: 'piece',
     photo: 'photo-1483985988355-763728e1935b',
     tag: 'EFFORTLESS ELEGANCE',
   },
@@ -57,6 +68,8 @@ if (configured) {
         name: item.title,
         type: item.category,
         price: money(item.price, item.unit),
+        amount: item.price,
+        unit: item.unit,
         photo: imageUrl(item.image_path),
         tag: item.category === 'materials' ? 'PREMIUM MATERIAL' : 'THE COLLECTION',
         alt: item.alt,
@@ -81,7 +94,6 @@ const brand = html`
     <img src="/TBB_LOGO.jpg" alt="TBB Couture" width="1041" height="1080" />
   </span>
 `
-const arrow = '<span aria-hidden="true">↗</span>'
 // Page sections.
 document.querySelector('#app').innerHTML = html`
   <a class="skip" href="#main">Skip to content</a>
@@ -119,7 +131,7 @@ document.querySelector('#app').innerHTML = html`
       </a>
     </nav>
     <button class="button outline header-cta" data-inquiry="consultation">
-      Book Consultation ${arrow}
+      Book Consultation
     </button>
     <button
       class="menu"
@@ -127,7 +139,20 @@ document.querySelector('#app').innerHTML = html`
       aria-expanded="false"
       aria-controls="navigation"
     >
-      ☰
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
     </button>
   </header>
   <main id="main">
@@ -140,7 +165,7 @@ document.querySelector('#app').innerHTML = html`
       />
       <div class="shade"></div>
       <div class="hero-content">
-        <p class="eyebrow">— &nbsp; THE ART OF A PERFECT FIT</p>
+        <p class="eyebrow">THE ART OF A PERFECT FIT</p>
         <h1>
           TBB Couture
           <span>
@@ -155,25 +180,19 @@ document.querySelector('#app').innerHTML = html`
           Made for the way you move through the world.
         </p>
         <div class="hero-actions">
-          <a class="button gold" id="shop" href="#marketplace">Shop Readymade ${arrow}</a>
-          <a class="button glass" href="#learning-center">
-            Explore Learning Center ${arrow}
-          </a>
+          <a class="button gold" id="shop" href="#marketplace">Shop Readymade</a>
+          <a class="button glass" href="#learning-center">Explore Learning Center</a>
         </div>
       </div>
       <div class="hero-bottom">
         <span>BESPOKE TAILORING / TIMELESS EXPRESSION</span>
-        <a href="#marketplace">SCROLL TO DISCOVER &nbsp; ↓</a>
+        <a href="#marketplace">SCROLL TO DISCOVER</a>
       </div>
-      <span class="hero-side">THE TBB COUTURE EDIT — 01</span>
     </section>
     <div class="values">
       <span>Made with intention</span>
-      <i>✧</i>
       <span>Tailored to you</span>
-      <i>✧</i>
       <span>Exceptional fabrics</span>
-      <i>✧</i>
       <span>Timeless by design</span>
     </div>
     <section class="section collection" id="marketplace">
@@ -201,6 +220,11 @@ document.querySelector('#app').innerHTML = html`
           <button data-filter="materials" aria-pressed="false">Premium Materials</button>
         </div>
         <span id="count" aria-live="polite">${products.length} curated pieces</span>
+        <button class="button outline cart-open" id="cart-open" type="button">
+          Cart (
+          <span id="cart-count">0</span>
+          )
+        </button>
       </div>
       <div class="product-grid">
         ${products
@@ -219,7 +243,20 @@ document.querySelector('#app').innerHTML = html`
                     data-product="${i}"
                     aria-label="View ${esc(p.name)}"
                   >
-                    ↗
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7" />
+                    </svg>
                   </button>
                 </div>
                 <div class="meta">
@@ -231,7 +268,12 @@ document.querySelector('#app').innerHTML = html`
                 <h3>${esc(p.name)}</h3>
                 <div class="product-bottom">
                   <p>${p.price}</p>
-                  <button data-product="${i}">View Details &nbsp; ↗</button>
+                  <div class="product-actions">
+                    <button class="add-to-cart" data-add-to-cart="${i}" type="button">
+                      Add to cart
+                    </button>
+                    <button data-product="${i}" type="button">View details</button>
+                  </div>
                 </div>
               </article>
             `,
@@ -281,7 +323,22 @@ document.querySelector('#app').innerHTML = html`
                     width="800"
                     height="1000"
                   />
-                  <span class="gallery-expand" aria-hidden="true">&#8599;</span>
+                  <span class="gallery-expand" aria-hidden="true">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7" />
+                    </svg>
+                  </span>
                 </button>
                 <figcaption>
                   <span>${esc(work.category)}</span>
@@ -320,19 +377,19 @@ document.querySelector('#app').innerHTML = html`
         <ul class="offerings">
           <li>
             <span>01</span>
-            Pattern Drafting ${arrow}
+            Pattern Drafting
           </li>
           <li>
             <span>02</span>
-            Premium Bespoke Stitching ${arrow}
+            Premium Bespoke Stitching
           </li>
           <li>
             <span>03</span>
-            Fashion Business Management ${arrow}
+            Fashion Business Management
           </li>
         </ul>
         <button class="button dark" data-inquiry="learning-center">
-          Inquire for Intake ${arrow}
+          Inquire for Intake
         </button>
         <p class="craft-note">Your journey starts with a conversation.</p>
       </div>
@@ -347,15 +404,21 @@ document.querySelector('#app').innerHTML = html`
         From your first idea to the final fitting, let's create something extraordinary.
       </p>
       <button class="button outline" data-inquiry="consultation">
-        Let's Talk About Your Fit ${arrow}
+        Let's Talk About Your Fit
       </button>
     </section>
   </main>
   <footer>
     <a href="#home" aria-label="TBB Couture home">${brand}</a>
     <p class="footer-slogan">We design 2 fit.</p>
+    <p class="cac-registration">RC-8376818</p>
     <div class="footer-links">
-      <a href="tel:+2348169824380">
+      <a
+        href="${whatsappUrl('Hello TBB Couture! I would like to get in touch.')}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Contact TBB Couture on WhatsApp (opens in a new tab)"
+      >
         <span class="contact-icon" aria-hidden="true">
           <svg
             width="19"
@@ -373,7 +436,7 @@ document.querySelector('#app').innerHTML = html`
             />
           </svg>
         </span>
-        <span>+234 816 982 4380</span>
+        <span>+234 816 483 5306</span>
       </a>
       <a
         href="https://www.instagram.com/tbb_couture/"
@@ -428,14 +491,14 @@ document.querySelector('#app').innerHTML = html`
     </div>
     <div class="footer-bottom">
       <a href="/admin">Admin workspace</a>
-      <span>© ${new Date().getFullYear()} TBB Couture. All rights reserved.</span>
-      <span>DESIGNED WITH PURPOSE. MADE TO FIT.</span>
-      <a href="#home">Back to top ↑</a>
+      <span>&copy; ${new Date().getFullYear()} TBB Couture. All rights reserved.</span>
+      <span>Designed by Oracle Tek GS</span>
+      <a href="#home">Back to top</a>
     </div>
   </footer>
   <a
     class="floating-whatsapp"
-    href="https://wa.me/2348169824380?text=Hello%20TBB%20Couture%21%20I%27d%20like%20to%20make%20an%20inquiry."
+    href="${whatsappUrl("Hello TBB Couture! I'd like to make an inquiry.")}"
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Chat with TBB Couture on WhatsApp (opens in a new tab)"
@@ -465,18 +528,177 @@ document.querySelector('#app').innerHTML = html`
     <button class="gallery-close close" aria-label="Close image preview">&times;</button>
     <img id="gallery-image" alt="" />
     <div class="gallery-controls">
-      <button id="gallery-previous" aria-label="Previous image">&larr;</button>
+      <button id="gallery-previous" aria-label="Previous image">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="m14 5-7 7 7 7" />
+        </svg>
+      </button>
       <p id="gallery-caption" aria-live="polite"></p>
-      <button id="gallery-next" aria-label="Next image">&rarr;</button>
+      <button id="gallery-next" aria-label="Next image">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="m10 5 7 7-7 7" />
+        </svg>
+      </button>
     </div>
   </dialog>
+  <dialog id="cart-dialog" aria-labelledby="cart-title">
+    <button class="close" id="close-cart" aria-label="Close cart">&times;</button>
+    <p class="eyebrow">YOUR SELECTION</p>
+    <h2 id="cart-title">Shopping cart</h2>
+    <div id="cart-items"></div>
+    <div class="cart-summary">
+      <span>Estimated total</span>
+      <strong id="cart-total">${money(0)}</strong>
+    </div>
+    <p class="form-note">
+      Checkout opens WhatsApp with your order details. Availability, delivery, and final
+      pricing will be confirmed by TBB Couture.
+    </p>
+    <button class="button dark cart-checkout" id="cart-checkout" type="button">
+      Continue to WhatsApp
+    </button>
+  </dialog>
   <dialog id="inquiry-dialog" aria-labelledby="dialog-title">
-    <button class="close" aria-label="Close dialog">×</button>
+    <button class="close" aria-label="Close dialog">&times;</button>
     <div id="dialog-content"></div>
   </dialog>
 `
 // Consultation, product, and learning-center inquiry dialogs.
 const dialog = document.querySelector('#inquiry-dialog')
+const cartDialog = document.querySelector('#cart-dialog')
+const cart = new Map()
+
+function renderCart() {
+  const count = [...cart.values()].reduce((total, quantity) => total + quantity, 0)
+  document.querySelector('#cart-count').textContent = String(count)
+  const lines = [...cart.entries()]
+  const cartItems = document.querySelector('#cart-items')
+  const total = lines.reduce(
+    (sum, [index, quantity]) => sum + products[index].amount * quantity,
+    0,
+  )
+  document.querySelector('#cart-total').textContent = money(total)
+  document.querySelector('#cart-checkout').disabled = count === 0
+  cartItems.innerHTML = lines.length
+    ? html`
+        <div class="cart-lines">
+          ${lines
+            .map(([index, quantity]) => {
+              const product = products[index]
+              const unitLabel =
+                product.unit === 'yard'
+                  ? quantity === 1
+                    ? 'yard'
+                    : 'yards'
+                  : quantity === 1
+                    ? 'piece'
+                    : 'pieces'
+              return html`
+                <article class="cart-item">
+                  <div class="cart-item-info">
+                    <h3>${esc(product.name)}</h3>
+                    <p>${money(product.amount, product.unit)} each</p>
+                  </div>
+                  <div class="cart-quantity">
+                    <button
+                      type="button"
+                      data-cart-decrease="${index}"
+                      aria-label="Decrease quantity of ${esc(product.name)}"
+                    >
+                      -
+                    </button>
+                    <span>${quantity} ${unitLabel}</span>
+                    <button
+                      type="button"
+                      data-cart-increase="${index}"
+                      aria-label="Increase quantity of ${esc(product.name)}"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <strong class="cart-line-total">
+                    ${money(product.amount * quantity)}
+                  </strong>
+                  <button
+                    class="cart-remove"
+                    type="button"
+                    data-cart-remove="${index}"
+                    aria-label="Remove ${esc(product.name)} from cart"
+                  >
+                    Remove
+                  </button>
+                </article>
+              `
+            })
+            .join('')}
+        </div>
+      `
+    : html`
+        <p class="cart-empty">Your cart is empty.</p>
+      `
+}
+
+document.querySelector('#cart-open').addEventListener('click', () => {
+  renderCart()
+  cartDialog.showModal()
+})
+document.querySelector('#close-cart').addEventListener('click', () => cartDialog.close())
+cartDialog.querySelector('#cart-items').addEventListener('click', (event) => {
+  const button = event.target.closest('button')
+  if (!button) return
+  const index = Number(
+    button.dataset.cartIncrease ??
+      button.dataset.cartDecrease ??
+      button.dataset.cartRemove,
+  )
+  if (button.hasAttribute('data-cart-increase')) {
+    cart.set(index, (cart.get(index) || 0) + 1)
+  } else if (button.hasAttribute('data-cart-decrease')) {
+    const quantity = (cart.get(index) || 0) - 1
+    if (quantity > 0) cart.set(index, quantity)
+    else cart.delete(index)
+  } else if (button.hasAttribute('data-cart-remove')) {
+    cart.delete(index)
+  } else return
+  renderCart()
+})
+document.querySelector('#cart-checkout').addEventListener('click', () => {
+  if (!cart.size) return
+  const lines = [...cart.entries()].map(([index, quantity]) => {
+    const product = products[index]
+    const unitLabel = product.unit === 'yard' ? 'yard(s)' : 'piece(s)'
+    return `- ${product.name}: ${quantity} ${unitLabel} at ${money(product.amount, product.unit)} each = ${money(product.amount * quantity)}`
+  })
+  const total = [...cart.entries()].reduce(
+    (sum, [index, quantity]) => sum + products[index].amount * quantity,
+    0,
+  )
+  const message = `Hello TBB Couture! I'd like to order:\n${lines.join('\n')}\nEstimated total: ${money(total)}\nPlease confirm availability and delivery details.`
+  window.open(whatsappUrl(message), '_blank', 'noopener,noreferrer')
+})
+
 function inquire(type, product) {
   const training = type === 'learning-center'
   document.querySelector('#dialog-content').innerHTML = html`
@@ -485,7 +707,7 @@ function inquire(type, product) {
       ${product ? esc(product.name) : training ? 'Learn the art of couture.' : 'Your perfect fit starts here.'}
     </h2>
     <p>
-      ${product ? esc(product.description || (configured ? 'Contact our team for sizing, fabrics, and availability.' : 'Explore this collection concept with our team. Confirm available designs, fabrics, sizes, and final pricing.')) : training ? 'Ask about upcoming intakes, fees, and training schedules. Tell us a little about your goals.' : 'Tell us what you have in mind, and let’s start planning your next piece.'}
+      ${product ? esc(product.description || (configured ? 'Contact our team for sizing, fabrics, and availability.' : 'Explore this collection concept with our team. Confirm available designs, fabrics, sizes, and final pricing.')) : training ? 'Ask about upcoming intakes, fees, and training schedules. Tell us a little about your goals.' : "Tell us what you have in mind, and let's start planning your next piece."}
     </p>
     ${
       product
@@ -540,25 +762,21 @@ function inquire(type, product) {
           name="message"
           rows="3"
           maxlength="1500"
-          placeholder="${training ? 'Your goals and preferred start date…' : 'Occasion, style, sizing, or timeline…'}"
+          placeholder="${training ? 'Your goals and preferred start date...' : 'Occasion, style, sizing, or timeline...'}"
         ></textarea>
       </label>
       <p class="form-note">
         Continue to WhatsApp to review and send your inquiry directly to TBB Couture. This
         website does not submit or store your details.
       </p>
-      <button class="button dark" type="submit">Continue to WhatsApp ${arrow}</button>
+      <button class="button dark" type="submit">Continue to WhatsApp</button>
     </form>
   `
   dialog.querySelector('form').addEventListener('submit', (event) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
     const message = `Hello TBB Couture! My name is ${data.get('name')}. I'd like to inquire about ${product ? product.name : training ? 'the Learning Center' : 'a consultation'}.\n${data.get('interest')}\n${data.get('message')}`
-    window.open(
-      `https://wa.me/2348169824380?text=${encodeURIComponent(message)}`,
-      '_blank',
-      'noopener,noreferrer',
-    )
+    window.open(whatsappUrl(message), '_blank', 'noopener,noreferrer')
   })
   dialog.showModal()
 }
@@ -572,6 +790,14 @@ document
       inquire('product', products[Number(b.dataset.product)]),
     ),
   )
+document.querySelectorAll('[data-add-to-cart]').forEach((button) =>
+  button.addEventListener('click', () => {
+    const index = Number(button.dataset.addToCart)
+    cart.set(index, (cart.get(index) || 0) + 1)
+    renderCart()
+    document.querySelector('#cart-open').focus()
+  }),
+)
 dialog.querySelector('.close').addEventListener('click', () => dialog.close())
 dialog.addEventListener('click', (e) => {
   const r = dialog.getBoundingClientRect()
@@ -603,27 +829,55 @@ document
   .querySelectorAll('[data-filter]')
   .forEach((b) => b.addEventListener('click', () => filter(b.dataset.filter)))
 document.querySelector('#shop').addEventListener('click', () => filter('readymade'))
-// Responsive navigation.
-const menu = document.querySelector('.menu'),
-  nav = document.querySelector('nav')
+// Responsive navigation: outside taps, keyboard focus, Escape, and resizing.
+const menu = document.querySelector('.menu')
+const nav = document.querySelector('#navigation')
+const mobileNavigation = window.matchMedia('(max-width: 900px)')
+
+function updateMenuHeight() {
+  const bottom = document.querySelector('header').getBoundingClientRect().bottom
+  nav.style.setProperty('--nav-bottom', Math.max(0, bottom) + 'px')
+}
+
 function closeMenu() {
   nav.classList.remove('open')
   menu.setAttribute('aria-expanded', 'false')
   menu.setAttribute('aria-label', 'Open navigation')
 }
+
 menu.addEventListener('click', () => {
   const open = menu.getAttribute('aria-expanded') !== 'true'
+  updateMenuHeight()
   nav.classList.toggle('open', open)
   menu.setAttribute('aria-expanded', String(open))
   menu.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation')
 })
-nav.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu))
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && nav.classList.contains('open')) {
+
+nav.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu))
+document.addEventListener('pointerdown', (event) => {
+  if (!nav.contains(event.target) && !menu.contains(event.target)) closeMenu()
+})
+document.addEventListener('focusin', (event) => {
+  if (!nav.contains(event.target) && !menu.contains(event.target)) closeMenu()
+})
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && nav.classList.contains('open')) {
     closeMenu()
     menu.focus()
   }
 })
+mobileNavigation.addEventListener('change', () => {
+  if (nav.contains(document.activeElement) && mobileNavigation.matches) menu.focus()
+  closeMenu()
+})
+window.addEventListener('resize', updateMenuHeight, { passive: true })
+window.addEventListener(
+  'scroll',
+  () => {
+    if (nav.classList.contains('open')) updateMenuHeight()
+  },
+  { passive: true },
+)
 // Progressive reveal animations.
 if ('IntersectionObserver' in window) {
   const observer = new IntersectionObserver(
