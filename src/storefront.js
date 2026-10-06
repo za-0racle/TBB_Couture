@@ -1,4 +1,5 @@
 import './style.css'
+import { restoreCart, serializeCart } from './cart-storage.js'
 import { galleryWorks as sampleWorks } from './gallery.js'
 import { configured, publicItems, imageUrl } from './backend.js'
 import { escapeHtml as esc, money } from './utils.js'
@@ -17,6 +18,7 @@ const photo = (id, w = 1000) =>
     : `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=85`
 let products = [
   {
+    id: 'demo-signature-suit',
     name: 'The Signature Suit',
     type: 'readymade',
     price: money(185000),
@@ -26,6 +28,7 @@ let products = [
     tag: 'THE SIGNATURE EDIT',
   },
   {
+    id: 'demo-evening-muse',
     name: 'The Evening Muse',
     type: 'readymade',
     price: money(145000),
@@ -35,6 +38,7 @@ let products = [
     tag: 'OCCASION WEAR',
   },
   {
+    id: 'demo-wool-blend',
     name: 'Italian Wool Blend',
     type: 'materials',
     price: money(28000, 'yard'),
@@ -44,6 +48,7 @@ let products = [
     tag: 'FABRIC LIBRARY',
   },
   {
+    id: 'demo-everyday-essential',
     name: 'The Everyday Essential',
     type: 'readymade',
     price: money(95000),
@@ -65,6 +70,7 @@ if (configured) {
     products = records
       .filter((item) => item.kind === 'product')
       .map((item) => ({
+        id: item.id,
         name: item.title,
         type: item.category,
         price: money(item.price, item.unit),
@@ -567,6 +573,7 @@ document.querySelector('#app').innerHTML = html`
     <button class="close" id="close-cart" aria-label="Close cart">&times;</button>
     <p class="eyebrow">YOUR SELECTION</p>
     <h2 id="cart-title">Shopping cart</h2>
+    <p id="cart-storage-notice" class="form-note" role="status" hidden></p>
     <div id="cart-items"></div>
     <div class="cart-summary">
       <span>Estimated total</span>
@@ -588,9 +595,40 @@ document.querySelector('#app').innerHTML = html`
 // Consultation, product, and learning-center inquiry dialogs.
 const dialog = document.querySelector('#inquiry-dialog')
 const cartDialog = document.querySelector('#cart-dialog')
-const cart = new Map()
+const cartStorageKey = configured
+  ? 'tbb-cart:v1:' + (import.meta.env.VITE_SUPABASE_URL || '')
+  : 'tbb-cart:v1:demo'
+let storedCart = null
+let cartStorageUnavailable = false
+try {
+  storedCart = localStorage.getItem(cartStorageKey)
+} catch {
+  cartStorageUnavailable = true
+}
+const cart = restoreCart(storedCart, products)
 
 function renderCart() {
+  // A failed catalog request must never erase the visitor's saved selection.
+  if (!catalogError) {
+    try {
+      localStorage.setItem(cartStorageKey, serializeCart(cart, products))
+      cartStorageUnavailable = false
+    } catch {
+      cartStorageUnavailable = true
+    }
+  }
+  const notice = document.querySelector('#cart-storage-notice')
+  notice.textContent = catalogError
+    ? 'Your saved cart is kept. Refresh when the collection is available to restore it.'
+    : cartStorageUnavailable
+      ? 'Your browser could not save this cart. Keep this page open to retain your selection.'
+      : ''
+  notice.hidden = !notice.textContent
+  const activeControl = document.activeElement?.closest('#cart-items button')
+  const activeAttribute = activeControl
+    ?.getAttributeNames()
+    .find((name) => name.startsWith('data-cart-'))
+  const activeIndex = activeAttribute ? activeControl.getAttribute(activeAttribute) : null
   const count = [...cart.values()].reduce((total, quantity) => total + quantity, 0)
   document.querySelector('#cart-count').textContent = String(count)
   const lines = [...cart.entries()]
@@ -658,13 +696,35 @@ function renderCart() {
     : html`
         <p class="cart-empty">Your cart is empty.</p>
       `
+  if (activeAttribute) {
+    const replacement = cartItems.querySelector(`[${activeAttribute}="${activeIndex}"]`)
+    ;(
+      replacement ||
+      cartItems.querySelector('button') ||
+      document.querySelector('#close-cart')
+    ).focus()
+  }
 }
+
+// Restore the badge and totals immediately after the catalog loads.
+renderCart()
 
 document.querySelector('#cart-open').addEventListener('click', () => {
   renderCart()
   cartDialog.showModal()
 })
 document.querySelector('#close-cart').addEventListener('click', () => cartDialog.close())
+cartDialog.addEventListener('click', (event) => {
+  const bounds = cartDialog.getBoundingClientRect()
+  if (
+    event.target === cartDialog &&
+    (event.clientX < bounds.left ||
+      event.clientX > bounds.right ||
+      event.clientY < bounds.top ||
+      event.clientY > bounds.bottom)
+  )
+    cartDialog.close()
+})
 cartDialog.querySelector('#cart-items').addEventListener('click', (event) => {
   const button = event.target.closest('button')
   if (!button) return

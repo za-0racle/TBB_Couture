@@ -153,7 +153,9 @@ function renderLogin(message = '') {
     passwordToggle.setAttribute('aria-pressed', String(visible))
     passwordToggle.setAttribute('aria-label', visible ? 'Hide password' : 'Show password')
     passwordToggle.title = visible ? 'Hide password' : 'Show password'
-    passwordToggle.querySelector('.password-eye-slash').hidden = !visible
+    passwordToggle
+      .querySelector('.password-eye-slash')
+      .toggleAttribute('hidden', !visible)
   })
   document.querySelector('#login-form')?.addEventListener('submit', async (event) => {
     event.preventDefault()

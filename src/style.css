@@ -1475,3 +1475,23 @@ dialog h2 {
     font-size: 52px;
   }
 }
+
+@media (max-width: 480px) {
+  .cart-item {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cart-item-info h3 {
+    overflow-wrap: anywhere;
+  }
+  .cart-quantity {
+    flex-wrap: wrap;
+  }
+  .cart-quantity button {
+    width: 44px;
+    height: 44px;
+  }
+  .cart-remove {
+    justify-self: start;
+    min-height: 44px;
+  }
+}
